@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Poplar Shores</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --cream: #f5f0e8; --stone: #c8bfb0; --bark: #3a3028;
+      --water: #7a9baa; --fog: #e8e3da; --ink: #1e1a16;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--cream); color: var(--ink);
+      font-family: 'Jost', sans-serif; font-weight: 300;
+      letter-spacing: 0.03em; overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 28px 48px; transition: background 0.4s, padding 0.4s;
+    }
+    nav.scrolled {
+      background: rgba(245,240,232,0.93); backdrop-filter: blur(10px);
+      padding: 18px 48px; border-bottom: 1px solid var(--stone);
+    }
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif; font-size: 1.35rem;
+      font-weight: 300; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--cream); transition: color 0.4s; text-decoration: none;
+    }
+    nav.scrolled .nav-logo { color: var(--bark); }
+    .nav-links { display: flex; gap: 36px; list-style: none; }
+    .nav-links a {
+      font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--cream); text-decoration: none; opacity: 0.85;
+      transition: opacity 0.2s, color 0.4s;
+    }
+    nav.scrolled .nav-links a { color: var(--bark); }
+    .nav-links a:hover { opacity: 1; }
+    .book-btn {
+      font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase;
+      padding: 10px 24px; border: 1px solid rgba(245,240,232,0.6);
+      color: var(--cream); text-decoration: none; transition: all 0.3s;
+    }
+    nav.scrolled .book-btn { border-color: var(--bark); color: var(--bark); }
+    .book-btn:hover { background: var(--water); border-color: var(--water); color: #fff; }
+
+    /* HERO */
+    .hero {
+      position: relative; height: 100vh; min-height: 600px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background: var(--bark) center/cover no-repeat;
+      transform: scale(1.04);
+      animation: heroZoom 12s ease-out forwards;
+      transition: background-image 0.6s;
+    }
+    .hero-bg::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(to bottom, rgba(30,26,22,0.38) 0%, rgba(30,26,22,0.08) 50%, rgba(30,26,22,0.55) 100%);
+    }
+    @keyframes heroZoom { from { transform: scale(1.04); } to { transform: scale(1); } }
+    .hero-content {
+      position: relative; z-index: 2; text-align: center; color: var(--cream);
+      animation: fadeUp 1.2s 0.3s both;
+    }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+    .hero-eyebrow { font-size: 0.68rem; letter-spacing: 0.28em; text-transform: uppercase; opacity: 0.75; margin-bottom: 20px; }
+    .hero-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3.5rem, 8vw, 7rem); font-weight: 300;
+      line-height: 0.95; letter-spacing: 0.04em; margin-bottom: 28px;
+    }
+    .hero-title em { font-style: italic; color: rgba(245,240,232,0.72); }
+    .hero-sub { font-size: 0.78rem; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.7; }
+    .hero-scroll {
+      position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); z-index: 2;
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      color: var(--cream); opacity: 0.5; font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase;
+      animation: fadeUp 1.2s 1.2s both;
+    }
+    .scroll-line { width: 1px; height: 40px; background: var(--cream); animation: pulse 2s ease-in-out infinite; }
+    @keyframes pulse { 0%,100% { opacity: 0.5; transform: scaleY(1); } 50% { opacity: 1; transform: scaleY(0.5); } }
+
+    /* ABOUT */
+    #about { padding: 100px 48px; background: var(--cream); }
+    .intro {
+      max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
+    }
+    .section-label { font-size: 0.65rem; letter-spacing: 0.28em; text-transform: uppercase; color: var(--water); margin-bottom: 16px; }
+    .intro-text h2 {
+      font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem, 3.5vw, 3rem);
+      font-weight: 300; line-height: 1.25; margin-bottom: 24px; color: var(--bark);
+    }
+    .intro-text p { font-size: 0.9rem; line-height: 1.85; color: #6b5f52; margin-bottom: 16px; }
+    .intro-image { position: relative; }
+    .intro-image img { width: 100%; aspect-ratio: 4/5; object-fit: cover; display: block; }
+    .intro-image::before {
+      content: ''; position: absolute;
+      top: -16px; left: -16px; right: 16px; bottom: 16px;
+      border: 1px solid var(--stone); z-index: -1;
+    }
+    .intro-placeholder { width: 100%; aspect-ratio: 4/5; background: var(--fog); }
+
+    /* FEATURES */
+    .features-grid {
+      max-width: 900px; margin: 80px auto 0;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: var(--stone);
+    }
+    .feature-item { background: var(--cream); padding: 36px 28px; text-align: center; }
+    .feature-icon { font-size: 1.5rem; margin-bottom: 14px; }
+    .feature-title { font-family: 'Cormorant Garamond', serif; font-size: 1.05rem; color: var(--bark); margin-bottom: 8px; }
+    .feature-desc { font-size: 0.75rem; letter-spacing: 0.05em; color: #8a7d70; line-height: 1.6; }
+
+    /* GALLERY */
+    #gallery { background: var(--fog); padding: 100px 0; }
+    .gallery-header { padding: 0 48px; margin-bottom: 48px; }
+    .gallery-header h2 { font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem, 3vw, 2.6rem); font-weight: 300; color: var(--bark); }
+    .gallery-grid {
+      display: grid; grid-template-columns: repeat(12, 1fr); gap: 6px; padding: 0 6px; min-height: 280px;
+    }
+    .gallery-item { overflow: hidden; cursor: zoom-in; background: var(--fog); }
+    .gallery-item img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.6s ease; }
+    .gallery-item:hover img { transform: scale(1.04); }
+    .gl-0 { grid-column: span 7; aspect-ratio: 16/10; }
+    .gl-1 { grid-column: span 5; aspect-ratio: 4/5; }
+    .gl-2, .gl-3, .gl-4 { grid-column: span 4; aspect-ratio: 4/3; }
+    .gl-5 { grid-column: span 12; aspect-ratio: 21/9; }
+    .gallery-msg { grid-column: span 12; display: flex; align-items: center; justify-content: center; height: 200px; font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--stone); }
+
+    /* LIGHTBOX */
+    .lightbox {
+      display: none; position: fixed; inset: 0;
+      background: rgba(30,26,22,0.96); z-index: 200; align-items: center; justify-content: center;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox img { max-width: 90vw; max-height: 88vh; object-fit: contain; }
+    .lb-close {
+      position: absolute; top: 28px; right: 36px;
+      background: none; border: none; color: var(--cream); font-size: 2rem;
+      cursor: pointer; opacity: 0.6; font-family: 'Jost', sans-serif; font-weight: 300;
+    }
+    .lb-close:hover { opacity: 1; }
+    .lb-caption { position: absolute; bottom: 32px; font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--stone); }
+
+    /* AVAILABILITY */
+    #availability { padding: 100px 48px; }
+    .avail-inner { max-width: 900px; margin: 0 auto; text-align: center; }
+    .avail-inner h2 { font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem, 3vw, 2.6rem); font-weight: 300; color: var(--bark); margin-bottom: 12px; }
+    .avail-inner .sub { font-size: 0.8rem; letter-spacing: 0.1em; color: #8a7d70; margin-bottom: 56px; }
+    .cal-wrap { display: flex; gap: 32px; justify-content: center; flex-wrap: wrap; }
+    .cal-month { flex: 0 0 280px; }
+    .cal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .cal-title { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: var(--bark); letter-spacing: 0.06em; }
+    .cal-nav { background: none; border: none; cursor: pointer; color: var(--stone); font-size: 1.1rem; padding: 4px 8px; transition: color 0.2s; }
+    .cal-nav:hover { color: var(--bark); }
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+    .cal-dow { font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--stone); text-align: center; padding-bottom: 10px; }
+    .cal-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 0.78rem; color: var(--bark); border-radius: 2px; }
+    .cal-day.avail { background: rgba(122,155,170,0.12); }
+    .cal-day.booked { background: var(--bark); color: var(--cream); opacity: 0.5; }
+    .cal-day.today { border: 1px solid var(--water); color: var(--water); }
+    .cal-day.past { opacity: 0.28; }
+    .cal-legend { display: flex; gap: 24px; justify-content: center; margin-top: 32px; }
+    .leg-item { display: flex; align-items: center; gap: 8px; font-size: 0.7rem; letter-spacing: 0.1em; color: #8a7d70; }
+    .leg-dot { width: 12px; height: 12px; border-radius: 2px; }
+    .dot-a { background: rgba(122,155,170,0.25); border: 1px solid rgba(122,155,170,0.5); }
+    .dot-b { background: var(--bark); opacity: 0.5; }
+
+    /* BOOK */
+    #book { background: var(--bark); text-align: center; padding: 120px 48px; }
+    #book .section-label { color: var(--stone); }
+    #book h2 { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.5rem, 5vw, 4.5rem); font-weight: 300; color: var(--cream); line-height: 1.1; margin-bottom: 20px; }
+    #book h2 em { font-style: italic; color: var(--water); }
+    #book p { font-size: 0.82rem; letter-spacing: 0.1em; color: var(--stone); margin-bottom: 52px; }
+    .airbnb-btn {
+      display: inline-flex; align-items: center; gap: 12px;
+      padding: 18px 48px; background: var(--water); color: #fff;
+      text-decoration: none; font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .airbnb-btn:hover { background: #8fb3c4; transform: translateY(-2px); }
+
+    /* FOOTER */
+    footer { background: var(--ink); padding: 48px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px; }
+    .footer-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: var(--stone); letter-spacing: 0.14em; text-transform: uppercase; }
+    .footer-text { font-size: 0.68rem; color: #5a504a; letter-spacing: 0.1em; }
+
+    @media (max-width: 768px) {
+      nav { padding: 20px 24px; }
+      nav.scrolled { padding: 14px 24px; }
+      .nav-links { display: none; }
+      #about, #availability { padding: 72px 24px; }
+      .intro { grid-template-columns: 1fr; gap: 40px; }
+      .intro-image { display: none; }
+      .features-grid { grid-template-columns: 1fr; }
+      .gallery-grid { display: flex; flex-wrap: wrap; padding: 0 4px; gap: 4px; }
+      .gallery-item { flex: 0 0 calc(50% - 2px); aspect-ratio: 1; }
+      .gallery-item:first-child { flex: 0 0 100%; aspect-ratio: 16/9; }
+      .cal-wrap { flex-direction: column; align-items: center; }
+      footer { padding: 32px 24px; flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<script>
+  // ══════════════════════════════════════════════════════════
+  //  CONFIGURATION — fill in these two values to go live
+  // ══════════════════════════════════════════════════════════
+  //
+  //  GIST_URL  →  After creating your GitHub Gist (see SETUP.md),
+  //               paste the raw URL here. It looks like:
+  //               https://gist.githubusercontent.com/USERNAME/GIST_ID/raw/photos.json
+  //
+  //  AIRBNB_URL → Your full Airbnb listing URL
+  //
+  const GIST_URL   = 'https://gist.githubusercontent.com/suhinthank/d9eeda4fc85da0dca594e15ddc51be86/raw/eb365ce828d3442d16b218e0568e7f23d8cdd8ec/gistfile1.txt';   // ← paste here
+  const AIRBNB_URL = '';   // ← paste here
+  // ══════════════════════════════════════════════════════════
+</script>
+
+<!-- NAV -->
+<nav id="nav">
+  <a class="nav-logo" href="#">Poplar Shores</a>
+  <ul class="nav-links">
+    <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#availability">Availability</a></li>
+    <li><a href="#book">Book</a></li>
+  </ul>
+  <a class="book-btn" id="nav-book" href="#" target="_blank">Book on Airbnb</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg" id="hero-bg"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Water Access &nbsp;·&nbsp; Modern Retreat</p>
+    <h1 class="hero-title">Poplar<br><em>Shores</em></h1>
+    <p class="hero-sub">A private modern cottage on the water</p>
+  </div>
+  <div class="hero-scroll"><div class="scroll-line"></div>Explore</div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="intro">
+    <div class="intro-text">
+      <p class="section-label">The Cottage</p>
+      <h2>Modern living,<br>naturally situated.</h2>
+      <p>Poplar Shores is a thoughtfully designed modern cottage offering direct water access and a peaceful setting. Clean lines meet natural materials throughout.</p>
+      <p>Whether you're on the dock at sunrise or gathered around the fire in the evening, every detail has been considered to make your stay effortlessly comfortable.</p>
+    </div>
+    <div class="intro-image" id="intro-img-wrap">
+      <div class="intro-placeholder"></div>
+    </div>
+  </div>
+  <div class="features-grid">
+    <div class="feature-item"><div class="feature-icon">🌊</div><div class="feature-title">Water Access</div><div class="feature-desc">Private dock with direct access to the water</div></div>
+    <div class="feature-item"><div class="feature-icon">🛏</div><div class="feature-title">Sleeps 6</div><div class="feature-desc">3 bedrooms, thoughtfully furnished</div></div>
+    <div class="feature-item"><div class="feature-icon">🔥</div><div class="feature-title">Outdoor Fire</div><div class="feature-desc">Fire pit and covered outdoor living area</div></div>
+    <div class="feature-item"><div class="feature-icon">📶</div><div class="feature-title">Fast WiFi</div><div class="feature-desc">High-speed internet throughout</div></div>
+    <div class="feature-item"><div class="feature-icon">🚗</div><div class="feature-title">Parking</div><div class="feature-desc">Private driveway with ample parking</div></div>
+    <div class="feature-item"><div class="feature-icon">🍳</div><div class="feature-title">Full Kitchen</div><div class="feature-desc">Fully equipped modern kitchen</div></div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery">
+  <div class="gallery-header">
+    <p class="section-label">Gallery</p>
+    <h2>The space</h2>
+  </div>
+  <div class="gallery-grid" id="gallery-grid">
+    <div class="gallery-msg">Loading photos…</div>
+  </div>
+</section>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <button class="lb-close" id="lb-close">×</button>
+  <img id="lb-img" src="" alt="" />
+  <div class="lb-caption" id="lb-cap"></div>
+</div>
+
+<!-- AVAILABILITY -->
+<section id="availability">
+  <div class="avail-inner">
+    <p class="section-label">Availability</p>
+    <h2>Plan your stay</h2>
+    <p class="sub">Check dates before booking on Airbnb</p>
+    <div class="cal-wrap" id="cal-wrap"></div>
+    <div class="cal-legend">
+      <div class="leg-item"><div class="leg-dot dot-a"></div>Available</div>
+      <div class="leg-item"><div class="leg-dot dot-b"></div>Booked</div>
+    </div>
+  </div>
+</section>
+
+<!-- BOOK -->
+<section id="book">
+  <p class="section-label">Reserve</p>
+  <h2>Ready to<br><em>escape?</em></h2>
+  <p>Check dates and book directly through Airbnb — quick and secure.</p>
+  <a class="airbnb-btn" id="book-btn" href="#" target="_blank">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm.002 4.5c1.26 0 2.285.8 2.285 1.786 0 .986-1.024 1.786-2.285 1.786-1.261 0-2.285-.8-2.285-1.786 0-.986 1.024-1.786 2.285-1.786zM17.5 17.857c-.198.443-.612.643-1.062.5-.94-.292-1.77-.9-2.438-1.714-.668.814-1.5 1.422-2.438 1.714-.45.143-.864-.057-1.062-.5-.857-1.929-3.4-6.7-3.4-9 0-3.714 2.857-5.357 5-5.357 2.143 0 5 1.643 5 5.357 0 2.3-2.543 7.071-3.4 9z"/></svg>
+    Book on Airbnb
+  </a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Poplar Shores</div>
+  <div class="footer-text">© 2025 Poplar Shores · All rights reserved</div>
+</footer>
+
+<script>
+// Airbnb links
+if (AIRBNB_URL) {
+  document.getElementById('nav-book').href = AIRBNB_URL;
+  document.getElementById('book-btn').href = AIRBNB_URL;
+}
+
+// Nav scroll
+window.addEventListener('scroll', () => {
+  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 60);
+});
+
+// Lightbox
+const lightbox = document.getElementById('lightbox');
+document.getElementById('lb-close').onclick = () => lightbox.classList.remove('open');
+lightbox.addEventListener('click', e => { if (e.target === lightbox) lightbox.classList.remove('open'); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') lightbox.classList.remove('open'); });
+function openLightbox(url, caption) {
+  document.getElementById('lb-img').src = url;
+  document.getElementById('lb-cap').textContent = caption || '';
+  lightbox.classList.add('open');
+}
+
+// ── Photos from GitHub Gist ───────────────────────────────────────────────────
+async function loadPhotos() {
+  const grid = document.getElementById('gallery-grid');
+  if (!GIST_URL) {
+    grid.innerHTML = `<div class="gallery-msg">Add your Gist URL to display photos — see SETUP.md</div>`;
+    return;
+  }
+  try {
+    const res = await fetch(GIST_URL + '?t=' + Date.now());
+    if (!res.ok) throw new Error();
+    const data = await res.json();
+
+    const hero    = data.find(p => p.section === 'hero');
+    const gallery = data.filter(p => p.section === 'gallery');
+
+    if (hero) {
+      document.getElementById('hero-bg').style.backgroundImage = `url('${hero.url}')`;
+    }
+    if (gallery.length > 0) {
+      document.getElementById('intro-img-wrap').innerHTML =
+        `<img src="${gallery[0].url}" alt="${gallery[0].caption || 'Cottage'}" />`;
+    }
+    buildGallery(gallery);
+
+    // Booked dates can also live in the Gist
+    if (data._booked) bookedSet = new Set(data._booked);
+    renderCal();
+
+  } catch {
+    grid.innerHTML = `<div class="gallery-msg">Could not load photos. Check your Gist URL in the config.</div>`;
+  }
+}
+
+const LAYOUT = ['gl-0','gl-1','gl-2','gl-3','gl-4','gl-5'];
+function buildGallery(photos) {
+  const grid = document.getElementById('gallery-grid');
+  if (!photos.length) { grid.innerHTML = `<div class="gallery-msg">No gallery photos in your Gist yet.</div>`; return; }
+  grid.innerHTML = '';
+  photos.forEach((p, i) => {
+    const div = document.createElement('div');
+    div.className = `gallery-item ${LAYOUT[i % LAYOUT.length]}`;
+    div.innerHTML = `<img src="${p.url}" alt="${p.caption || ''}" loading="lazy" />`;
+    div.addEventListener('click', () => openLightbox(p.url, p.caption));
+    grid.appendChild(div);
+  });
+}
+
+// ── Calendar ──────────────────────────────────────────────────────────────────
+let bookedSet = new Set();
+let calOffset = 0;
+
+function renderCal() {
+  const wrap = document.getElementById('cal-wrap');
+  wrap.innerHTML = '';
+  for (let i = 0; i < 2; i++) wrap.appendChild(buildMonth(calOffset + i));
+}
+
+function buildMonth(offset) {
+  const today = new Date();
+  const d  = new Date(today.getFullYear(), today.getMonth() + offset, 1);
+  const yr = d.getFullYear(), mo = d.getMonth();
+  const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const DAYS   = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+  const todayStr = fmt(today);
+
+  const wrap = document.createElement('div');
+  wrap.className = 'cal-month';
+
+  const head = document.createElement('div');
+  head.className = 'cal-head';
+
+  if (offset === calOffset) {
+    const btn = document.createElement('button');
+    btn.className = 'cal-nav'; btn.innerHTML = '&#8592;';
+    btn.onclick = () => { calOffset = Math.max(0, calOffset-1); renderCal(); };
+    head.appendChild(btn);
+  } else head.appendChild(document.createElement('span'));
+
+  const title = document.createElement('div');
+  title.className = 'cal-title';
+  title.textContent = `${MONTHS[mo]} ${yr}`;
+  head.appendChild(title);
+
+  if (offset === calOffset + 1) {
+    const btn = document.createElement('button');
+    btn.className = 'cal-nav'; btn.innerHTML = '&#8594;';
+    btn.onclick = () => { calOffset++; renderCal(); };
+    head.appendChild(btn);
+  } else head.appendChild(document.createElement('span'));
+
+  wrap.appendChild(head);
+
+  const grid = document.createElement('div');
+  grid.className = 'cal-grid';
+  DAYS.forEach(l => { const el = document.createElement('div'); el.className = 'cal-dow'; el.textContent = l; grid.appendChild(el); });
+
+  const firstDay = new Date(yr, mo, 1).getDay();
+  const total = new Date(yr, mo+1, 0).getDate();
+  for (let i = 0; i < firstDay; i++) { const el = document.createElement('div'); el.className = 'cal-day'; grid.appendChild(el); }
+  for (let day = 1; day <= total; day++) {
+    const el = document.createElement('div');
+    el.className = 'cal-day';
+    const ds = fmt(new Date(yr, mo, day));
+    const isPast = new Date(yr, mo, day) < today && ds !== todayStr;
+    if (bookedSet.has(ds))  el.classList.add('booked');
+    else if (isPast)         el.classList.add('past');
+    else                     el.classList.add('avail');
+    if (ds === todayStr)     el.classList.add('today');
+    el.textContent = day;
+    grid.appendChild(el);
+  }
+  wrap.appendChild(grid);
+  return wrap;
+}
+
+function fmt(d) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+// Boot
+loadPhotos();
+renderCal();
+</script>
+</body>
+</html>
