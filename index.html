@@ -341,54 +341,100 @@ function openLightbox(url, caption) {
 }
 
 // ── Photos from Cloudinary ────────────────────────────────────────────────────
+// Photos are loaded automatically from your Cloudinary folder.
+// Just upload images to your "poplar-shores" folder and they appear here.
+// To manually override order, add public IDs to PINNED_FIRST (optional):
+const PINNED_FIRST = [
+  // 'poplar-shores/your-hero-photo',  // ← this becomes the hero if set
+];
+
+function cloudinaryUrl(public_id, width) {
+  const transform = width ? `f_auto,q_auto,w_${width}` : `f_auto,q_auto`;
+  return `https://res.cloudinary.com/${CLOUDINARY_CLOUD}/image/upload/${transform}/${public_id}`;
+}
+
 async function loadPhotos() {
   const grid = document.getElementById('gallery-grid');
+  grid.innerHTML = `<div class="gallery-msg">Loading photos…</div>`;
+
   try {
-    // Cloudinary image list endpoint — requires folder to have "resource list" enabled
+    // Use Cloudinary's list endpoint with folder as a tag prefix
     const url = `https://res.cloudinary.com/${CLOUDINARY_CLOUD}/image/list/${CLOUDINARY_FOLDER}.json`;
     const res = await fetch(url + '?t=' + Date.now());
-    if (!res.ok) throw new Error('fetch failed');
+
+    if (!res.ok) throw new Error(`${res.status}`);
     const data = await res.json();
     const resources = data.resources || [];
 
-    if (resources.length === 0) {
-      grid.innerHTML = `<div class="gallery-msg">No photos found — upload images to your "${CLOUDINARY_FOLDER}" folder in Cloudinary.</div>`;
-      return;
+    if (resources.length === 0) throw new Error('empty');
+
+    let photos = resources.map(r => ({ public_id: r.public_id, caption: '' }));
+
+    // Put pinned photos first if specified
+    if (PINNED_FIRST.length > 0) {
+      const pinned = PINNED_FIRST
+        .map(id => photos.find(p => p.public_id === id))
+        .filter(Boolean);
+      const rest = photos.filter(p => !PINNED_FIRST.includes(p.public_id));
+      photos = [...pinned, ...rest];
     }
 
-    // Build optimized image URLs
-    const photos = resources.map(r => ({
-      url:     `https://res.cloudinary.com/${CLOUDINARY_CLOUD}/image/upload/f_auto,q_auto/${r.public_id}`,
-      caption: (r.context && r.context.custom && r.context.custom.caption) || '',
-    }));
+    // First photo = hero
+    document.getElementById('hero-bg').style.backgroundImage =
+      `url('${cloudinaryUrl(photos[0].public_id, 1800)}')`;
 
-    // First photo becomes the hero background
-    document.getElementById('hero-bg').style.backgroundImage = `url('${photos[0].url}')`;
-
-    // Second photo goes in the intro sidebar
+    // Second photo = intro sidebar
     const galleryPhotos = photos.slice(1);
     if (galleryPhotos.length > 0) {
       document.getElementById('intro-img-wrap').innerHTML =
-        `<img src="${galleryPhotos[0].url}" alt="Cottage" />`;
+        `<img src="${cloudinaryUrl(galleryPhotos[0].public_id, 800)}" alt="Cottage" />`;
     }
+
     buildGallery(galleryPhotos);
 
   } catch (e) {
-    console.error(e);
-    grid.innerHTML = `<div class="gallery-msg">Could not load photos. See setup instructions below.</div>`;
+    console.error('Cloudinary load error:', e);
+    // Fallback: try fetching via search API with folder prefix
+    loadPhotosFallback();
+  }
+}
+
+async function loadPhotosFallback() {
+  const grid = document.getElementById('gallery-grid');
+  try {
+    // Alternative: construct URLs directly if we know the public IDs
+    // This fetches a manifest via the upload API's resource listing
+    const url = `https://res.cloudinary.com/${CLOUDINARY_CLOUD}/image/list/poplar-shores.json`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('fallback failed');
+    const data = await res.json();
+    const resources = data.resources || [];
+    if (resources.length === 0) throw new Error('empty');
+
+    const photos = resources.map(r => ({ public_id: r.public_id, caption: '' }));
+    document.getElementById('hero-bg').style.backgroundImage =
+      `url('${cloudinaryUrl(photos[0].public_id, 1800)}')`;
+    buildGallery(photos.slice(1));
+  } catch {
+    grid.innerHTML = `<div class="gallery-msg">
+      Photos could not load automatically. 
+      In Cloudinary: select all photos → Add Tag → type <strong>poplar-shores</strong> → Save.
+      Then refresh this page.
+    </div>`;
   }
 }
 
 const LAYOUT = ['gl-0','gl-1','gl-2','gl-3','gl-4','gl-5'];
 function buildGallery(photos) {
   const grid = document.getElementById('gallery-grid');
-  if (!photos.length) { grid.innerHTML = `<div class="gallery-msg">No gallery photos found in Cloudinary yet.</div>`; return; }
+  if (!photos.length) { grid.innerHTML = `<div class="gallery-msg">No gallery photos yet — add more public IDs to the PHOTOS array.</div>`; return; }
   grid.innerHTML = '';
   photos.forEach((p, i) => {
     const div = document.createElement('div');
     div.className = `gallery-item ${LAYOUT[i % LAYOUT.length]}`;
-    div.innerHTML = `<img src="${p.url}" alt="${p.caption || ''}" loading="lazy" />`;
-    div.addEventListener('click', () => openLightbox(p.url, p.caption));
+    const url = cloudinaryUrl(p.public_id, 1200);
+    div.innerHTML = `<img src="${url}" alt="${p.caption || ''}" loading="lazy" />`;
+    div.addEventListener('click', () => openLightbox(cloudinaryUrl(p.public_id, 2400), p.caption));
     grid.appendChild(div);
   });
 }
