@@ -215,17 +215,11 @@
 
 <script>
   // ══════════════════════════════════════════════════════════
-  //  CONFIGURATION — fill in these two values to go live
+  //  CONFIGURATION
   // ══════════════════════════════════════════════════════════
-  //
-  //  GIST_URL  →  After creating your GitHub Gist (see SETUP.md),
-  //               paste the raw URL here. It looks like:
-  //               https://gist.githubusercontent.com/USERNAME/GIST_ID/raw/photos.json
-  //
-  //  AIRBNB_URL → Your full Airbnb listing URL
-  //
-  const GIST_URL   = 'https://gist.githubusercontent.com/suhinthank/d9eeda4fc85da0dca594e15ddc51be86/raw/eb365ce828d3442d16b218e0568e7f23d8cdd8ec/gistfile1.txt';   // ← paste here
-  const AIRBNB_URL = '';   // ← paste here
+  const CLOUDINARY_CLOUD = 'dbicsaomm';       // your Cloudinary cloud name
+  const CLOUDINARY_FOLDER = 'poplar-shores';  // your Cloudinary folder name
+  const AIRBNB_URL = '';                       // ← paste your Airbnb listing URL
   // ══════════════════════════════════════════════════════════
 </script>
 
@@ -278,7 +272,7 @@
 <section id="gallery">
   <div class="gallery-header">
     <p class="section-label">Gallery</p>
-    <h2></h2>
+    <h2>The space</h2>
   </div>
   <div class="gallery-grid" id="gallery-grid">
     <div class="gallery-msg">Loading photos…</div>
@@ -346,43 +340,49 @@ function openLightbox(url, caption) {
   lightbox.classList.add('open');
 }
 
-// ── Photos from GitHub Gist ───────────────────────────────────────────────────
+// ── Photos from Cloudinary ────────────────────────────────────────────────────
 async function loadPhotos() {
   const grid = document.getElementById('gallery-grid');
-  if (!GIST_URL) {
-    grid.innerHTML = `<div class="gallery-msg">Add your Gist URL to display photos — see SETUP.md</div>`;
-    return;
-  }
   try {
-    const res = await fetch(GIST_URL + '?t=' + Date.now());
-    if (!res.ok) throw new Error();
+    // Cloudinary image list endpoint — requires folder to have "resource list" enabled
+    const url = `https://res.cloudinary.com/${CLOUDINARY_CLOUD}/image/list/${CLOUDINARY_FOLDER}.json`;
+    const res = await fetch(url + '?t=' + Date.now());
+    if (!res.ok) throw new Error('fetch failed');
     const data = await res.json();
+    const resources = data.resources || [];
 
-    const hero    = data.find(p => p.section === 'hero');
-    const gallery = data.filter(p => p.section === 'gallery');
-
-    if (hero) {
-      document.getElementById('hero-bg').style.backgroundImage = `url('${hero.url}')`;
+    if (resources.length === 0) {
+      grid.innerHTML = `<div class="gallery-msg">No photos found — upload images to your "${CLOUDINARY_FOLDER}" folder in Cloudinary.</div>`;
+      return;
     }
-    if (gallery.length > 0) {
+
+    // Build optimized image URLs
+    const photos = resources.map(r => ({
+      url:     `https://res.cloudinary.com/${CLOUDINARY_CLOUD}/image/upload/f_auto,q_auto/${r.public_id}`,
+      caption: (r.context && r.context.custom && r.context.custom.caption) || '',
+    }));
+
+    // First photo becomes the hero background
+    document.getElementById('hero-bg').style.backgroundImage = `url('${photos[0].url}')`;
+
+    // Second photo goes in the intro sidebar
+    const galleryPhotos = photos.slice(1);
+    if (galleryPhotos.length > 0) {
       document.getElementById('intro-img-wrap').innerHTML =
-        `<img src="${gallery[0].url}" alt="${gallery[0].caption || 'Cottage'}" />`;
+        `<img src="${galleryPhotos[0].url}" alt="Cottage" />`;
     }
-    buildGallery(gallery);
+    buildGallery(galleryPhotos);
 
-    // Booked dates can also live in the Gist
-    if (data._booked) bookedSet = new Set(data._booked);
-    renderCal();
-
-  } catch {
-    grid.innerHTML = `<div class="gallery-msg">Could not load photos. Check your Gist URL in the config.</div>`;
+  } catch (e) {
+    console.error(e);
+    grid.innerHTML = `<div class="gallery-msg">Could not load photos. See setup instructions below.</div>`;
   }
 }
 
 const LAYOUT = ['gl-0','gl-1','gl-2','gl-3','gl-4','gl-5'];
 function buildGallery(photos) {
   const grid = document.getElementById('gallery-grid');
-  if (!photos.length) { grid.innerHTML = `<div class="gallery-msg">No gallery photos in your Gist yet.</div>`; return; }
+  if (!photos.length) { grid.innerHTML = `<div class="gallery-msg">No gallery photos found in Cloudinary yet.</div>`; return; }
   grid.innerHTML = '';
   photos.forEach((p, i) => {
     const div = document.createElement('div');
