@@ -399,6 +399,50 @@
     }
 
 
+
+    /* BOOKING MODAL */
+    .booking-modal {
+      display: none; position: fixed; inset: 0; z-index: 300;
+      align-items: center; justify-content: center;
+      background: rgba(30,26,22,0.85); backdrop-filter: blur(6px);
+    }
+    .booking-modal.open { display: flex; }
+    .booking-box {
+      background: var(--cream); padding: 52px 48px;
+      width: 100%; max-width: 420px; position: relative;
+      animation: modalIn 0.35s ease; text-align: center;
+    }
+    .booking-box h3 {
+      font-family: 'Cormorant Garamond', serif; font-size: 1.9rem;
+      font-weight: 300; color: var(--bark); margin-bottom: 8px;
+    }
+    .booking-box p {
+      font-size: 0.75rem; letter-spacing: 0.1em;
+      color: #8a7d70; margin-bottom: 40px;
+    }
+    .booking-options { display: flex; flex-direction: column; gap: 14px; }
+    .booking-option {
+      display: flex; align-items: center; gap: 16px;
+      padding: 18px 24px; border: 1px solid var(--stone);
+      text-decoration: none; color: var(--bark);
+      font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase;
+      transition: all 0.3s; background: transparent;
+    }
+    .booking-option:hover { background: var(--bark); color: var(--cream); border-color: var(--bark); }
+    .booking-option:hover svg path,
+    .booking-option:hover svg rect,
+    .booking-option:hover svg circle { fill: var(--cream); }
+    .booking-option svg { width: 28px; height: 28px; flex-shrink: 0; transition: fill 0.3s; }
+    .booking-option-label { flex: 1; text-align: left; }
+    .booking-option-sub { font-size: 0.62rem; opacity: 0.6; display: block; letter-spacing: 0.08em; margin-top: 2px; text-transform: none; }
+    .booking-close {
+      position: absolute; top: 18px; right: 22px;
+      background: none; border: none; font-size: 1.5rem;
+      color: var(--stone); cursor: pointer;
+      font-family: 'Jost', sans-serif; font-weight: 300;
+    }
+    .booking-close:hover { color: var(--bark); }
+
     /* CONTACT */
     #contact { background: var(--fog); padding: 100px 48px; }
     .contact-inner { max-width: 680px; margin: 0 auto; }
@@ -504,7 +548,7 @@
     <li><a href="#contact">Contact Us</a></li>
     <li><a href="#book">Book</a></li>
   </ul>
-  <a class="book-btn" id="nav-book" href="#" target="_blank">Book on Airbnb</a>
+  <button class="book-btn" onclick="openBooking()">Book Now</button>
 </nav>
 
 <!-- HERO -->
@@ -762,32 +806,36 @@
 <section id="contact">
   <div class="contact-inner">
     <p class="section-label">Get in Touch</p>
-    <h2>Contact us</h2>
+    <h2>Contact Us</h2>
     <p class="sub">Have a question or want to check availability? Send us a message.</p>
 
     <div class="contact-form">
       <div class="contact-row">
         <div class="contact-field">
-          <label>First Name</label>
+          <label>First Name <span style="color:var(--water)">*</span></label>
           <input type="text" id="c-first" placeholder="Jane" />
         </div>
         <div class="contact-field">
-          <label>Last Name</label>
+          <label>Last Name <span style="color:var(--water)">*</span></label>
           <input type="text" id="c-last" placeholder="Smith" />
         </div>
       </div>
+      <div class="contact-field">
+        <label>Email Address <span style="color:var(--water)">*</span></label>
+        <input type="email" id="c-email" placeholder="jane@example.com" />
+      </div>
       <div class="contact-row">
         <div class="contact-field">
-          <label>Check-in Date</label>
+          <label>Check-in Date <span style="color:var(--water)">*</span></label>
           <input type="date" id="c-checkin" />
         </div>
         <div class="contact-field">
-          <label>Check-out Date</label>
+          <label>Check-out Date <span style="color:var(--water)">*</span></label>
           <input type="date" id="c-checkout" />
         </div>
       </div>
       <div class="contact-field">
-        <label>Message</label>
+        <label>Message <span style="color:var(--stone);font-size:0.6rem;letter-spacing:0.1em">optional</span></label>
         <textarea id="c-message" rows="5" placeholder="Tell us about your stay, group size, or any questions…"></textarea>
       </div>
       <div class="contact-success" id="contact-success">
@@ -803,11 +851,44 @@
   <p class="section-label">Reserve</p>
   <h2>Ready to<br><em>escape?</em></h2>
   <p>Check dates and book directly through Airbnb — quick and secure.</p>
-  <a class="airbnb-btn" id="book-btn" href="#" target="_blank">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm.002 4.5c1.26 0 2.285.8 2.285 1.786 0 .986-1.024 1.786-2.285 1.786-1.261 0-2.285-.8-2.285-1.786 0-.986 1.024-1.786 2.285-1.786zM17.5 17.857c-.198.443-.612.643-1.062.5-.94-.292-1.77-.9-2.438-1.714-.668.814-1.5 1.422-2.438 1.714-.45.143-.864-.057-1.062-.5-.857-1.929-3.4-6.7-3.4-9 0-3.714 2.857-5.357 5-5.357 2.143 0 5 1.643 5 5.357 0 2.3-2.543 7.071-3.4 9z"/></svg>
-    Book on Airbnb
-  </a>
+  <button class="airbnb-btn" onclick="openBooking()">Book Now</button>
 </section>
+
+
+<!-- BOOKING MODAL -->
+<div class="booking-modal" id="booking-modal">
+  <div class="booking-box">
+    <button class="booking-close" onclick="closeBooking()">×</button>
+    <h3>Book your stay</h3>
+    <p>Choose your preferred platform to check availability and reserve</p>
+    <div class="booking-options">
+
+      <a class="booking-option" id="airbnb-link" href="#" target="_blank">
+        <!-- Airbnb icon -->
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm.002 3.5c1.26 0 2.285.8 2.285 1.786 0 .986-1.024 1.786-2.285 1.786-1.261 0-2.285-.8-2.285-1.786 0-.986 1.024-1.786 2.285-1.786zM17.5 15.857c-.198.443-.612.643-1.062.5-.94-.292-1.77-.9-2.438-1.714-.668.814-1.5 1.422-2.438 1.714-.45.143-.864-.057-1.062-.5-.857-1.929-3.4-6.7-3.4-9 0-3.714 2.857-5.357 5-5.357 2.143 0 5 1.643 5 5.357 0 2.3-2.543 7.071-3.4 9z" fill="#3a3028"/>
+        </svg>
+        <div class="booking-option-label">
+          Airbnb
+          <span class="booking-option-sub">airbnb.com</span>
+        </div>
+      </a>
+
+      <a class="booking-option" id="vrbo-link" href="#" target="_blank">
+        <!-- VRBO icon -->
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="2" y="2" width="20" height="20" rx="4" fill="#3a3028"/>
+          <path d="M6 8l3.5 8L12 10l2.5 6L18 8" stroke="#f5f0e8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </svg>
+        <div class="booking-option-label">
+          VRBO
+          <span class="booking-option-sub">vrbo.com</span>
+        </div>
+      </a>
+
+    </div>
+  </div>
+</div>
 
 <!-- FOOTER -->
 <footer>
@@ -816,12 +897,6 @@
 </footer>
 
 <script>
-// Airbnb links
-if (AIRBNB_URL) {
-  document.getElementById('nav-book').href = AIRBNB_URL;
-  document.getElementById('book-btn').href = AIRBNB_URL;
-}
-
 // Nav scroll
 window.addEventListener('scroll', () => {
   document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 60);
@@ -971,17 +1046,51 @@ function initScrollReveal() {
 
 
 
+
+// ── Booking Modal ─────────────────────────────────────────────────────────────
+const AIRBNB_URL = '';  // ← paste your Airbnb listing URL
+const VRBO_URL   = '';  // ← paste your VRBO listing URL
+
+function openBooking() {
+  document.getElementById('airbnb-link').href = AIRBNB_URL || '#';
+  document.getElementById('vrbo-link').href   = VRBO_URL   || '#';
+  document.getElementById('booking-modal').classList.add('open');
+}
+function closeBooking() {
+  document.getElementById('booking-modal').classList.remove('open');
+}
+document.getElementById('booking-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeBooking();
+});
+
 // ── Contact Form ──────────────────────────────────────────────────────────────
 async function submitContact() {
   const first    = document.getElementById('c-first').value.trim();
   const last     = document.getElementById('c-last').value.trim();
   const checkin  = document.getElementById('c-checkin').value;
   const checkout = document.getElementById('c-checkout').value;
+  const email    = document.getElementById('c-email').value.trim();
   const message  = document.getElementById('c-message').value.trim();
   const btn      = document.querySelector('.contact-submit');
 
   if (!first || !last) {
     alert('Please enter your first and last name.');
+    return;
+  }
+  if (!email || !email.includes('@')) {
+    alert('Please enter a valid email address.');
+    return;
+  }
+  if (!checkin) {
+    alert('Please select a check-in date.');
+    return;
+  }
+  if (!checkout) {
+    alert('Please select a check-out date.');
+    return;
+  }
+  if (checkin >= checkout) {
+    alert('Check-out date must be after check-in date.');
     return;
   }
 
@@ -994,6 +1103,7 @@ async function submitContact() {
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify({
         name:     `${first} ${last}`,
+        email:    email,
         checkin:  checkin  || 'Not specified',
         checkout: checkout || 'Not specified',
         message:  message  || 'No message provided.',
@@ -1004,6 +1114,7 @@ async function submitContact() {
       document.getElementById('contact-success').style.display = 'block';
       document.getElementById('c-first').value    = '';
       document.getElementById('c-last').value     = '';
+      document.getElementById('c-email').value    = '';
       document.getElementById('c-checkin').value  = '';
       document.getElementById('c-checkout').value = '';
       document.getElementById('c-message').value  = '';
