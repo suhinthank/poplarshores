@@ -204,6 +204,67 @@
     .dot-b { background: var(--bark); opacity: 0.5; }
 
 
+
+    /* AMENITIES MODAL */
+    .amenities-wrap { max-width: 900px; margin: 40px auto 0; text-align: center; }
+    .amenities-btn {
+      font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase;
+      padding: 14px 36px; border: 1px solid var(--stone);
+      color: var(--bark); background: transparent; cursor: pointer;
+      font-family: 'Jost', sans-serif; font-weight: 300;
+      transition: all 0.3s;
+    }
+    .amenities-btn:hover { background: var(--bark); color: var(--cream); border-color: var(--bark); }
+
+    .amenities-modal {
+      display: none; position: fixed; inset: 0; z-index: 300;
+      align-items: flex-start; justify-content: center;
+      background: rgba(30,26,22,0.82); backdrop-filter: blur(6px);
+      overflow-y: auto; padding: 48px 24px;
+    }
+    .amenities-modal.open { display: flex; }
+    .amenities-box {
+      background: var(--cream); width: 100%; max-width: 680px;
+      padding: 52px 48px; position: relative;
+      animation: modalIn 0.35s ease;
+    }
+    .amenities-box h3 {
+      font-family: 'Cormorant Garamond', serif; font-size: 2rem;
+      font-weight: 300; color: var(--bark); margin-bottom: 6px;
+    }
+    .amenities-box .modal-sub {
+      font-size: 0.75rem; letter-spacing: 0.1em; color: #8a7d70;
+      margin-bottom: 40px;
+    }
+    .amenities-close {
+      position: absolute; top: 20px; right: 24px;
+      background: none; border: none; font-size: 1.6rem;
+      color: var(--stone); cursor: pointer;
+      font-family: 'Jost', sans-serif; font-weight: 300; line-height: 1;
+    }
+    .amenities-close:hover { color: var(--bark); }
+    .amenities-categories {
+      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 36px 40px;
+    }
+    .amenity-category h4 {
+      font-size: 0.68rem; letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--water); margin-bottom: 14px;
+      padding-bottom: 10px; border-bottom: 1px solid var(--stone);
+    }
+    .amenity-category ul { list-style: none; }
+    .amenity-category ul li {
+      font-size: 0.85rem; color: #6b5f52; line-height: 1.5;
+      padding: 5px 0; display: flex; align-items: center; gap: 10px;
+    }
+    .amenity-category ul li::before {
+      content: ''; width: 4px; height: 4px; border-radius: 50%;
+      background: var(--stone); flex-shrink: 0;
+    }
+    @media (max-width: 600px) {
+      .amenities-box { padding: 40px 28px; }
+      .amenities-categories { grid-template-columns: 1fr 1fr; gap: 24px; }
+    }
+
     /* REVIEWS */
     #reviews { background: var(--bark); padding: 100px 48px; overflow: hidden; }
     #reviews .section-label { color: var(--stone); text-align: center; }
@@ -337,6 +398,57 @@
       .review-modal-box { padding: 40px 28px; margin: 16px; }
     }
 
+
+    /* CONTACT */
+    #contact { background: var(--fog); padding: 100px 48px; }
+    .contact-inner { max-width: 680px; margin: 0 auto; }
+    .contact-inner h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 3vw, 2.6rem); font-weight: 300;
+      color: var(--bark); margin-bottom: 12px;
+    }
+    .contact-inner .sub {
+      font-size: 0.8rem; letter-spacing: 0.1em;
+      color: #8a7d70; margin-bottom: 48px;
+    }
+    .contact-form { display: flex; flex-direction: column; gap: 20px; }
+    .contact-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .contact-field { display: flex; flex-direction: column; gap: 8px; }
+    .contact-field label {
+      font-size: 0.65rem; letter-spacing: 0.2em;
+      text-transform: uppercase; color: #8a7d70;
+    }
+    .contact-field input,
+    .contact-field textarea {
+      background: var(--cream); border: 1px solid var(--stone);
+      padding: 14px 16px; font-family: 'Jost', sans-serif;
+      font-size: 0.88rem; color: var(--bark); font-weight: 300;
+      outline: none; transition: border-color 0.2s; width: 100%;
+    }
+    .contact-field input:focus,
+    .contact-field textarea:focus { border-color: var(--water); }
+    .contact-field textarea { resize: none; }
+    .contact-submit {
+      align-self: flex-start;
+      padding: 16px 48px; background: var(--bark);
+      color: var(--cream); border: none; cursor: pointer;
+      font-family: 'Jost', sans-serif; font-size: 0.75rem;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .contact-submit:hover { background: var(--water); transform: translateY(-2px); }
+    .contact-success {
+      display: none; padding: 16px 20px;
+      border: 1px solid rgba(122,155,170,0.4);
+      background: rgba(122,155,170,0.08);
+      font-size: 0.8rem; letter-spacing: 0.08em; color: var(--water);
+    }
+    @media (max-width: 600px) {
+      #contact { padding: 72px 24px; }
+      .contact-row { grid-template-columns: 1fr; }
+      .contact-submit { width: 100%; text-align: center; }
+    }
+
     /* BOOK */
     #book { background: var(--bark); text-align: center; padding: 120px 48px; }
     #book .section-label { color: var(--stone); }
@@ -389,6 +501,7 @@
   <ul class="nav-links">
     <li><a href="#gallery">Gallery</a></li>
     <li><a href="#availability">Availability</a></li>
+    <li><a href="#contact">Contact</a></li>
     <li><a href="#book">Book</a></li>
   </ul>
   <a class="book-btn" id="nav-book" href="#" target="_blank">Book on Airbnb</a>
@@ -426,16 +539,150 @@
     <div class="feature-item"><div class="feature-icon">🚗</div><div class="feature-title">Parking</div><div class="feature-desc">Private driveway with ample parking</div></div>
     <div class="feature-item"><div class="feature-icon">🍳</div><div class="feature-title">Full Kitchen</div><div class="feature-desc">Fully equipped modern kitchen</div></div>
   </div>
+
+  <div class="amenities-wrap">
+    <button class="amenities-btn" onclick="openAmenities()">+ Additional Amenities</button>
+  </div>
+
 </section>
 
 <!-- GALLERY -->
 <section id="gallery">
   <div class="gallery-header">
     <p class="section-label">Gallery</p>
-    <h2></h2></h2>
+    <h2>The space</h2>
   </div>
   <div class="gallery-grid" id="gallery-grid">
     <div class="gallery-msg">Loading photos…</div>
+  </div>
+</section>
+
+<!-- AMENITIES MODAL -->
+<div class="amenities-modal" id="amenities-modal">
+  <div class="amenities-box">
+    <button class="amenities-close" onclick="closeAmenities()">×</button>
+    <h3>All Amenities</h3>
+    <p class="modal-sub">Everything included in your stay at Poplar Shores</p>
+    <div class="amenities-categories">
+
+      <div class="amenity-category">
+        <h4>Bathroom</h4>
+        <ul>
+          <li>Bathtub</li>
+          <li>Hair dryer</li>
+          <li>Cleaning products</li>
+          <li>Shampoo</li>
+          <li>Hot water</li>
+        </ul>
+      </div>
+
+      <div class="amenity-category">
+        <h4>Outdoor</h4>
+        <ul>
+          <li>Shared patio or balcony backyard</li>
+          <li>Fire pit</li>
+          <li>Outdoor furniture</li>
+          <li>Hammock</li>
+          <li>Outdoor dining area</li>
+          <li>BBQ grill: gas</li>
+          <li>Kayak</li>
+          <li>Canoe</li>
+          <li>Paddle board</li>
+        </ul>
+      </div>
+
+      <div class="amenity-category">
+        <h4>Bedroom & Laundry</h4>
+        <ul>
+          <li>Washer</li>
+          <li>Dryer</li>
+          <li>Essentials</li>
+          <li>Hangers</li>
+          <li>Bed linens</li>
+          <li>Extra pillows and blankets</li>
+          <li>Room-darkening shades</li>
+          <li>Iron</li>
+          <li>Drying rack for clothing</li>
+          <li>Clothing storage: closet</li>
+        </ul>
+      </div>
+
+      <div class="amenity-category">
+        <h4>Entertainment</h4>
+        <ul>
+          <li>TV</li>
+          <li>Books and reading material</li>
+        </ul>
+      </div>
+
+      <div class="amenity-category">
+        <h4>Family</h4>
+        <ul>
+          <li>Children's books and toys</li>
+        </ul>
+      </div>
+
+      <div class="amenity-category">
+        <h4>Parking & Facilities</h4>
+        <ul>
+          <li>Free parking on premises</li>
+        </ul>
+      </div>
+
+      <div class="amenity-category">
+        <h4>Services</h4>
+        <ul>
+          <li>Pets allowed</li>
+        </ul>
+      </div>
+
+      <div class="amenity-category">
+        <h4>Heating & Cooling</h4>
+        <ul>
+          <li>Air conditioning</li>
+          <li>Indoor fireplace</li>
+          <li>Ceiling fan</li>
+          <li>Heating</li>
+        </ul>
+      </div>
+
+      <div class="amenity-category">
+        <h4>Home Safety</h4>
+        <ul>
+          <li>Smoke alarm</li>
+          <li>Carbon monoxide alarm</li>
+          <li>Fire extinguisher</li>
+          <li>First aid kit</li>
+        </ul>
+      </div>
+
+      <div class="amenity-category">
+        <h4>Kitchen & Dining</h4>
+        <ul>
+          <li>Kitchen</li>
+          <li>Refrigerator</li>
+          <li>Microwave</li>
+          <li>Cooking basics</li>
+          <li>Dishes and silverware</li>
+          <li>Dishwasher</li>
+          <li>Stainless steel stove</li>
+          <li>Stainless steel oven</li>
+          <li>Hot water kettle</li>
+          <li>Coffee maker</li>
+          <li>Wine glasses</li>
+          <li>Toaster</li>
+          <li>Baking sheet</li>
+          <li>Blender</li>
+          <li>Barbecue utensils</li>
+          <li>Dining table</li>
+          <li>Coffee</li>
+          <li>Bread maker</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</div>
   </div>
 </section>
 
@@ -507,6 +754,46 @@
     <div class="cal-legend">
       <div class="leg-item"><div class="leg-dot dot-a"></div>Available</div>
       <div class="leg-item"><div class="leg-dot dot-b"></div>Booked</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-inner">
+    <p class="section-label">Get in Touch</p>
+    <h2>Contact us</h2>
+    <p class="sub">Have a question or want to check availability? Send us a message.</p>
+
+    <div class="contact-form">
+      <div class="contact-row">
+        <div class="contact-field">
+          <label>First Name</label>
+          <input type="text" id="c-first" placeholder="Jane" />
+        </div>
+        <div class="contact-field">
+          <label>Last Name</label>
+          <input type="text" id="c-last" placeholder="Smith" />
+        </div>
+      </div>
+      <div class="contact-row">
+        <div class="contact-field">
+          <label>Check-in Date</label>
+          <input type="date" id="c-checkin" />
+        </div>
+        <div class="contact-field">
+          <label>Check-out Date</label>
+          <input type="date" id="c-checkout" />
+        </div>
+      </div>
+      <div class="contact-field">
+        <label>Message</label>
+        <textarea id="c-message" rows="5" placeholder="Tell us about your stay, group size, or any questions…"></textarea>
+      </div>
+      <div class="contact-success" id="contact-success">
+        ✓ &nbsp;Thank you! We'll be in touch within 24 hours.
+      </div>
+      <button class="contact-submit" onclick="submitContact()">Send Message</button>
     </div>
   </div>
 </section>
@@ -681,6 +968,53 @@ function initScrollReveal() {
   });
 }
 
+
+
+
+// ── Contact Form ──────────────────────────────────────────────────────────────
+function submitContact() {
+  const first    = document.getElementById('c-first').value.trim();
+  const last     = document.getElementById('c-last').value.trim();
+  const checkin  = document.getElementById('c-checkin').value;
+  const checkout = document.getElementById('c-checkout').value;
+  const message  = document.getElementById('c-message').value.trim();
+
+  if (!first || !last) {
+    alert('Please enter your first and last name.');
+    return;
+  }
+
+  // Build mailto link so message goes to your email
+  const subject = encodeURIComponent(`Poplar Shores Inquiry — ${first} ${last} - ${checkin || 'TBD'} to ${checkout || 'TBD'}`);
+  const body = encodeURIComponent(
+    `Name: ${first} ${last}\n` +
+    `Check-in: ${checkin || 'Not specified'}\n` +
+    `Check-out: ${checkout || 'Not specified'}\n\n` +
+    `Message:\n${message || 'No message provided.'}`
+  );
+
+  // Opens their email client with pre-filled message
+  window.location.href = `mailto:poplarshores@gmail.com?subject=${subject}&body=${body}`;
+
+  // Show success message
+  document.getElementById('contact-success').style.display = 'block';
+  document.getElementById('c-first').value = '';
+  document.getElementById('c-last').value = '';
+  document.getElementById('c-checkin').value = '';
+  document.getElementById('c-checkout').value = '';
+  document.getElementById('c-message').value = '';
+}
+
+// ── Amenities Modal ───────────────────────────────────────────────────────────
+function openAmenities() {
+  document.getElementById('amenities-modal').classList.add('open');
+}
+function closeAmenities() {
+  document.getElementById('amenities-modal').classList.remove('open');
+}
+document.getElementById('amenities-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeAmenities();
+});
 
 // ── Reviews ───────────────────────────────────────────────────────────────────
 const SEED_REVIEWS = [
