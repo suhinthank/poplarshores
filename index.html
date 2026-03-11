@@ -128,8 +128,30 @@
     .gallery-grid {
       display: grid; grid-template-columns: repeat(12, 1fr); gap: 6px; padding: 0 6px; min-height: 280px;
     }
-    .gallery-item { overflow: hidden; cursor: zoom-in; background: var(--fog); }
-    .gallery-item img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.6s ease; }
+    .gallery-item {
+      overflow: hidden; cursor: zoom-in;
+      background: var(--fog); position: relative;
+      opacity: 0; transform: translateY(20px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .gallery-item.visible { opacity: 1; transform: translateY(0); }
+    /* Shimmer while loading */
+    .gallery-item::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(90deg, var(--fog) 25%, #ddd8ce 50%, var(--fog) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.6s ease-in-out infinite; z-index: 0;
+    }
+    @keyframes shimmer {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+    .gallery-item img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      position: relative; z-index: 1;
+      opacity: 0; transition: transform 0.6s ease, opacity 0.5s ease;
+    }
+    .gallery-item img.loaded { opacity: 1; }
     .gallery-item:hover img { transform: scale(1.04); }
     .gl-0 { grid-column: span 7; aspect-ratio: 16/10; }
     .gl-1 { grid-column: span 5; aspect-ratio: 4/5; }
@@ -345,8 +367,9 @@ function openLightbox(url, caption) {
 // Just upload images to your "poplar-shores" folder and they appear here.
 // To manually override order, add public IDs to PINNED_FIRST (optional):
 const PINNED_FIRST = [
-   'polar-1_sjcir6',  // ← this becomes the hero if set
+  // 'poplar-shores/your-hero-photo',  // ← this becomes the hero if set
 ];
+const PINNED_INTRO = 'polar-12_krwjaz'; // ← pinned intro sidebar photo
 
 function cloudinaryUrl(public_id, width) {
   const transform = width ? `f_auto,q_auto,w_${width}` : `f_auto,q_auto`;
@@ -383,11 +406,12 @@ async function loadPhotos() {
     document.getElementById('hero-bg').style.backgroundImage =
       `url('${cloudinaryUrl(photos[0].public_id, 1800)}')`;
 
-    // Second photo = intro sidebar
+    // Second photo = intro sidebar (or pinned if set)
     const galleryPhotos = photos.slice(1);
-    if (galleryPhotos.length > 0) {
+    const introId = PINNED_INTRO || (galleryPhotos.length > 0 ? galleryPhotos[0].public_id : null);
+    if (introId) {
       document.getElementById('intro-img-wrap').innerHTML =
-        `<img src="${cloudinaryUrl(galleryPhotos[0].public_id, 800)}" alt="Cottage" />`;
+        `<img src="${cloudinaryUrl(introId, 800)}" alt="Cottage" />`;
     }
 
     buildGallery(galleryPhotos);
@@ -427,15 +451,43 @@ async function loadPhotosFallback() {
 const LAYOUT = ['gl-0','gl-1','gl-2','gl-3','gl-4','gl-5'];
 function buildGallery(photos) {
   const grid = document.getElementById('gallery-grid');
-  if (!photos.length) { grid.innerHTML = `<div class="gallery-msg">No gallery photos yet — add more public IDs to the PHOTOS array.</div>`; return; }
+  if (!photos.length) { grid.innerHTML = `<div class="gallery-msg">No gallery photos yet.</div>`; return; }
   grid.innerHTML = '';
   photos.forEach((p, i) => {
     const div = document.createElement('div');
     div.className = `gallery-item ${LAYOUT[i % LAYOUT.length]}`;
     const url = cloudinaryUrl(p.public_id, 1200);
-    div.innerHTML = `<img src="${url}" alt="${p.caption || ''}" loading="lazy" />`;
+    const img = document.createElement('img');
+    img.src = url;
+    img.alt = p.caption || '';
+    img.loading = 'lazy';
+    // Fade in once image is loaded
+    img.onload = () => img.classList.add('loaded');
+    if (img.complete) img.classList.add('loaded');
+    div.appendChild(img);
     div.addEventListener('click', () => openLightbox(cloudinaryUrl(p.public_id, 2400), p.caption));
     grid.appendChild(div);
+  });
+  // Scroll reveal using IntersectionObserver
+  initScrollReveal();
+}
+
+function initScrollReveal() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, idx) => {
+      if (entry.isIntersecting) {
+        // Stagger each item slightly
+        setTimeout(() => {
+          entry.target.classList.add('visible');
+        }, (entry.target.dataset.index || 0) * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.gallery-item').forEach((el, i) => {
+    el.dataset.index = i;
+    observer.observe(el);
   });
 }
 
