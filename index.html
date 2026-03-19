@@ -514,14 +514,14 @@
     .airbnb-btn:hover { background: #8fb3c4; transform: translateY(-2px); }
 
 
-    .footer-social { display: flex; gap: 20px; align-items: center; }
+    .footer-social { display: flex; gap: 20px; align-items: center; justify-content: center; }
     .social-link { display: flex; align-items: center; justify-content: center; opacity: 0.7; transition: opacity 0.2s, transform 0.2s; }
     .social-link:hover { opacity: 1; transform: translateY(-2px); }
     .social-link:hover svg rect, .social-link:hover svg circle, .social-link:hover svg path { stroke: var(--water); }
     .social-link:hover svg circle:last-child { fill: var(--water); }
 
     /* FOOTER */
-    footer { background: var(--bark); padding: 48px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px; }
+    footer { background: var(--bark); padding: 48px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; text-align: center; }
     .footer-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: var(--stone); letter-spacing: 0.14em; text-transform: uppercase; }
     .footer-text { font-size: 0.68rem; color: #4a6e82; letter-spacing: 0.1em; }
 
@@ -565,7 +565,6 @@
 <section class="hero">
   <div class="hero-bg" id="hero-bg"></div>
   <div class="hero-content">
-    <p class="hero-eyebrow">Water Access &nbsp;·&nbsp; Modern Retreat</p>
     <h1 class="hero-title">Poplar<br><em>Shores</em></h1>
     <p class="hero-sub">A private modern cottage on the water</p>
   </div>
@@ -587,7 +586,7 @@
     </div>
   </div>
   <div class="features-grid">
-    <div class="feature-item"><div class="feature-icon">🌊</div><div class="feature-title">Water Access</div><div class="feature-desc">Private dock with direct access to the water</div></div>
+    <div class="feature-item"><div class="feature-icon">🌊</div><div class="feature-title">Water Access</div><div class="feature-desc">Private beach with direct access to the water</div></div>
     <div class="feature-item"><div class="feature-icon">🛏</div><div class="feature-title">Sleeps 18</div><div class="feature-desc">6 bedrooms · 4 full baths</div></div>
     <div class="feature-item"><div class="feature-icon">🔥</div><div class="feature-title">Outdoor Fire</div><div class="feature-desc">Fire pit and covered outdoor living area</div></div>
     <div class="feature-item"><div class="feature-icon">📶</div><div class="feature-title">Fast WiFi</div><div class="feature-desc">High-speed internet throughout</div></div>
@@ -624,6 +623,7 @@
           <li>Cleaning products</li>
           <li>Shampoo</li>
           <li>Hot water</li>
+          <li>Shampoo/Conditioner/Body Wash</li>
         </ul>
       </div>
 
@@ -635,7 +635,7 @@
           <li>Outdoor furniture</li>
           <li>Hammock</li>
           <li>Outdoor dining area</li>
-          <li>Gas BBQ grill</li>
+          <li>Gas BBQ</li>
           <li>Kayak</li>
           <li>Canoe</li>
           <li>Paddle board</li>
@@ -721,7 +721,6 @@
           <li>Barbecue utensils</li>
           <li>Dining table</li>
           <li>Coffee</li>
-          <li>Bread maker</li>
         </ul>
       </div>
 
