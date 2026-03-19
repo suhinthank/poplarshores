@@ -621,9 +621,8 @@
           <li>Bathtub</li>
           <li>Hair dryer</li>
           <li>Cleaning products</li>
-          <li>Shampoo</li>
-          <li>Hot water</li>
           <li>Shampoo/Conditioner/Body Wash</li>
+          <li>Hot water</li>
         </ul>
       </div>
 
@@ -631,6 +630,7 @@
         <h4>Outdoor</h4>
         <ul>
           <li>Large patio and balcony backyard</li>
+          <li>2 upper-level decks - front & rear</li>
           <li>Fire pit</li>
           <li>Outdoor furniture</li>
           <li>Hammock</li>
@@ -805,7 +805,7 @@
 <!-- CONTACT -->
 <section id="contact">
   <div class="contact-inner">
-    <p class="section-label">Get in Touch</p>
+    <p class="section-label"></p>
     <h2>Contact Us</h2>
     <p class="sub">Have a question or want to check availability? Send us a message.</p>
 
@@ -913,7 +913,7 @@ function openLightbox(url, caption) {
 // Just upload images to your "poplar-shores" folder and they appear here.
 // To manually override order, add public IDs to PINNED_FIRST (optional):
 const PINNED_FIRST = [
-  '010_krusyg',  // ← hero background photo
+  'hero_dkutbf',  // ← hero background photo
 ];
 const PINNED_INTRO = 'polar-12_krwjaz'; // ← pinned intro sidebar photo
 
@@ -949,7 +949,7 @@ async function loadPhotos() {
     }
 
     // First photo = hero (PINNED_HERO always overrides)
-    const heroId = '010_krusyg';
+    const heroId = 'hero_dkutbf';
     document.getElementById('hero-bg').style.backgroundImage =
       `url('${cloudinaryUrl(heroId, 1800)}')`;
 
