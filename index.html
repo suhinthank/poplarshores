@@ -587,7 +587,7 @@
     </div>
   </div>
   <div class="features-grid">
-    <div class="feature-item"><div class="feature-icon">🌊</div><div class="feature-title">Water Access</div><div class="feature-desc">Private beach with direct access to the water</div></div>
+    <div class="feature-item"><div class="feature-icon">🌊</div><div class="feature-title">Water Access</div><div class="feature-desc">Private dock with direct access to the water</div></div>
     <div class="feature-item"><div class="feature-icon">🛏</div><div class="feature-title">Sleeps 18</div><div class="feature-desc">6 bedrooms · 4 full baths</div></div>
     <div class="feature-item"><div class="feature-icon">🔥</div><div class="feature-title">Outdoor Fire</div><div class="feature-desc">Fire pit and covered outdoor living area</div></div>
     <div class="feature-item"><div class="feature-icon">📶</div><div class="feature-title">Fast WiFi</div><div class="feature-desc">High-speed internet throughout</div></div>
@@ -630,12 +630,12 @@
       <div class="amenity-category">
         <h4>Outdoor</h4>
         <ul>
-          <li>Shared patio or balcony backyard</li>
+          <li>Large patio and balcony backyard</li>
           <li>Fire pit</li>
           <li>Outdoor furniture</li>
           <li>Hammock</li>
           <li>Outdoor dining area</li>
-          <li>BBQ grill: gas</li>
+          <li>Gas BBQ grill</li>
           <li>Kayak</li>
           <li>Canoe</li>
           <li>Paddle board</li>
@@ -663,6 +663,7 @@
         <ul>
           <li>TV</li>
           <li>Books and reading material</li>
+          <li>Board games & cards</li>
         </ul>
       </div>
 
@@ -720,6 +721,7 @@
           <li>Barbecue utensils</li>
           <li>Dining table</li>
           <li>Coffee</li>
+          <li>Bread maker</li>
         </ul>
       </div>
 
@@ -847,7 +849,7 @@
 
 <!-- BOOK -->
 <section id="book">
-  <p class="section-label">Reserve</p>
+  <p class="section-label"></p>
   <h2>Ready to<br><em>escape?</em></h2>
   <p>Check dates and book directly through Airbnb — quick and secure.</p>
   <button class="airbnb-btn" onclick="openBooking()">Book Now</button>
@@ -874,20 +876,20 @@
 <footer>
   <div class="footer-logo">Poplar Shores</div>
   <div class="footer-social">
-    <a href="https://instagram.com/YOUR_HANDLE" target="_blank" class="social-link" id="instagram-link" title="Instagram">
+    <a href="https://instagram.com/poplar_shores" target="_blank" class="social-link" id="instagram-link" title="Instagram">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <rect x="2" y="2" width="20" height="20" rx="5" stroke="#c8bfb0" stroke-width="1.8"/>
         <circle cx="12" cy="12" r="4.5" stroke="#c8bfb0" stroke-width="1.8"/>
         <circle cx="17.5" cy="6.5" r="1" fill="#c8bfb0"/>
       </svg>
     </a>
-    <a href="https://tiktok.com/@YOUR_HANDLE" target="_blank" class="social-link" id="tiktok-link" title="TikTok">
+    <a href="https://tiktok.com/@poplar_shores" target="_blank" class="social-link" id="tiktok-link" title="TikTok">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" stroke="#c8bfb0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </a>
   </div>
-  <div class="footer-text">© 2025 Poplar Shores · All rights reserved</div>
+  <div class="footer-text">© 2026 Poplar Shores · All rights reserved</div>
 </footer>
 
 <script>
@@ -912,7 +914,7 @@ function openLightbox(url, caption) {
 // Just upload images to your "poplar-shores" folder and they appear here.
 // To manually override order, add public IDs to PINNED_FIRST (optional):
 const PINNED_FIRST = [
-  'polar-1_sjcir6',  // ← hero background photo
+  '010_krusyg',  // ← hero background photo
 ];
 const PINNED_INTRO = 'polar-12_krwjaz'; // ← pinned intro sidebar photo
 
@@ -948,7 +950,7 @@ async function loadPhotos() {
     }
 
     // First photo = hero (PINNED_HERO always overrides)
-    const heroId = 'polar-1_sjcir6';
+    const heroId = '010_krusyg';
     document.getElementById('hero-bg').style.backgroundImage =
       `url('${cloudinaryUrl(heroId, 1800)}')`;
 
@@ -983,7 +985,7 @@ async function loadPhotosFallback() {
 
     const photos = resources.map(r => ({ public_id: r.public_id, caption: '' }));
     document.getElementById('hero-bg').style.backgroundImage =
-      `url('${cloudinaryUrl('polar-1_sjcir6', 1800)}')`;
+      `url('${cloudinaryUrl('010_krusyg', 1800)}')`;
     buildGallery(photos.slice(1));
   } catch {
     grid.innerHTML = `<div class="gallery-msg">
