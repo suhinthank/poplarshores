@@ -142,13 +142,13 @@
     .gallery-header { padding: 48px 48px 36px; }
     .gallery-header h2 { font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem, 3vw, 2.6rem); font-weight: 300; color: var(--bark); }
     .gallery-grid {
-      columns: 3; column-gap: 6px; padding: 0 6px; min-height: 280px;
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 6px; padding: 0 6px;
     }
     .gallery-item {
       overflow: hidden; cursor: zoom-in;
       background: var(--fog); position: relative;
-      break-inside: avoid;
-      margin-bottom: 6px;
+      aspect-ratio: 4/3;
       opacity: 0; transform: translateY(20px);
       transition: opacity 0.7s ease, transform 0.7s ease;
     }
@@ -165,7 +165,7 @@
       100% { background-position: -200% 0; }
     }
     .gallery-item img {
-      width: 100%; height: auto; object-fit: cover; display: block;
+      width: 100%; height: 100%; object-fit: cover; display: block;
       position: relative; z-index: 1;
       opacity: 0; transition: transform 0.6s ease, opacity 0.5s ease;
     }
@@ -533,8 +533,7 @@
       .intro { grid-template-columns: 1fr; gap: 40px; }
       .intro-image { display: none; }
       .features-grid { grid-template-columns: 1fr; }
-      .gallery-grid { columns: 2; column-gap: 4px; padding: 0 4px; }
-      .gallery-item { margin-bottom: 4px; }
+      .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 4px; padding: 0 4px; }
       .cal-wrap { flex-direction: column; align-items: center; }
       footer { padding: 32px 24px; flex-direction: column; text-align: center; }
     }
@@ -639,6 +638,7 @@
           <li>Kayak</li>
           <li>Canoe</li>
           <li>Paddle board</li>
+          <li>Life jackets</li>
         </ul>
       </div>
 
@@ -914,6 +914,48 @@ function openLightbox(url, caption) {
 // To manually override order, add public IDs to PINNED_FIRST (optional):
 const PINNED_FIRST = [
   'hero_dkutbf',  // ← hero background photo
+  '01-poplar-1_o3rpuj',
+  '02-poplar-2_dxqe5r',
+  '03-poplar-3_n4lmos',
+  '04-poplar-4_fjoyso',
+  '05-poplar-5_vjy6tp',
+  '06-poplar-6_ysfivq',
+  '08-poplar-8_mabgdz',
+  '09-poplar-9_acmenv',
+  '10-poplar-10_t5spgc',
+  '11-poplar-11_ffhiq1',
+  '12-poplar-12_kdjw07',
+  '13-poplar-13_vxluss',
+  '14-poplar-14_t0rcl3',
+  '15-poplar-15_yhecmp',
+  '16-poplar-16_jrdiag',
+  '17-poplar-17_siyjzp',
+  '18-poplar-18_msiaou',
+  '19-poplar-19_gjrzml',
+  '20-poplar-20_ec5cx8',
+  '21-poplar-21_k8mw28',
+  '22-poplar-22_kr8fnf',
+  '23-poplar-23_ajvf4o',
+  '24-poplar-24_imucfu',
+  '25-poplar-25_y9e7a3',
+  '26-poplar-26_rljlnn',
+  '27-poplar-27_f0sdxt',
+  '28-poplar-28_qmmzys',
+  '29-poplar-29_lj5e5m',
+  '30-poplar-30_yoz2fu',
+  '31-poplar-31_ecjovr',
+  '32-poplar-32_j93zwk',
+  '33-poplar-33_kwrjga',
+  '34-poplar-34_bgxggk',
+  '35-poplar-35_m72utu',
+  '36-poplar-36_iw8ltr',
+  '37-poplar-37_bswdb3',
+  '38-poplar-38_s5vwtt',
+  '39-poplar-39_nqo7sx',
+  '40-poplar-40_k4oacv',
+  '41-poplar-41_myg8q8',
+  '42-poplar-42_mjyrby',
+  '43-poplar-43_ofdpz2',
 ];
 const PINNED_INTRO = 'polar-12_krwjaz'; // ← pinned intro sidebar photo
 
