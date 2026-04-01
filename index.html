@@ -1081,7 +1081,7 @@ function initScrollReveal() {
 
 
 // ── Booking Modal ─────────────────────────────────────────────────────────────
-const AIRBNB_URL = '';  // ← paste your Airbnb listing URL
+const AIRBNB_URL = 'http://airbnb.ca/h/poplarshores';  // ← paste your Airbnb listing URL
 const VRBO_URL   = '';  // ← paste your VRBO listing URL
 
 function openBooking() {
@@ -1136,7 +1136,7 @@ async function submitContact() {
   btn.disabled = true;
 
   try {
-    const res = await fetch('https://formspree.io/f/mqeyqbzz', {
+    const res = await fetch('https://formspree.io/f/xgopzzbj', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify({
