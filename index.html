@@ -1304,8 +1304,40 @@ function submitReview() {
 }
 
 // ── Calendar ──────────────────────────────────────────────────────────────────
+const WORKER_URL = 'https://royal-sky-e1cc.poplarshores.workers.dev';
 let bookedSet = new Set();
 let calOffset = 0;
+
+async function loadBookedDates() {
+  try {
+    const res = await fetch(WORKER_URL);
+    const text = await res.text();
+    const lines = text.split('\n');
+    let inEvent = false, dtStart = '', dtEnd = '';
+
+    lines.forEach(line => {
+      line = line.trim();
+      if (line === 'BEGIN:VEVENT') { inEvent = true; dtStart = ''; dtEnd = ''; }
+      if (line === 'END:VEVENT' && inEvent) {
+        inEvent = false;
+        if (dtStart && dtEnd) {
+          const start = new Date(dtStart.slice(0,4)+'-'+dtStart.slice(4,6)+'-'+dtStart.slice(6,8));
+          const end   = new Date(dtEnd.slice(0,4)+'-'+dtEnd.slice(4,6)+'-'+dtEnd.slice(6,8));
+          for (let d = new Date(start); d < end; d.setDate(d.getDate()+1)) {
+            bookedSet.add(d.toISOString().slice(0,10));
+          }
+        }
+      }
+      if (inEvent && line.startsWith('DTSTART')) dtStart = line.split(':').pop().split('T')[0].replace(/-/g,'');
+      if (inEvent && line.startsWith('DTEND'))   dtEnd   = line.split(':').pop().split('T')[0].replace(/-/g,'');
+    });
+
+    renderCal();
+  } catch(e) {
+    console.error('Calendar sync error:', e);
+    renderCal();
+  }
+}
 
 function renderCal() {
   const wrap = document.getElementById('cal-wrap');
