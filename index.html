@@ -189,6 +189,23 @@
     }
     .lb-close:hover { opacity: 1; }
     .lb-caption { position: absolute; bottom: 32px; font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--stone); }
+    .lb-arrow {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      background: none; border: 1px solid rgba(245,240,232,0.25); color: var(--cream);
+      width: 52px; height: 52px; display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; cursor: pointer; opacity: 0.55;
+      transition: opacity 0.2s, border-color 0.2s, background 0.2s;
+      font-family: 'Jost', sans-serif; font-weight: 300;
+    }
+    .lb-arrow:hover { opacity: 1; border-color: rgba(245,240,232,0.7); background: rgba(245,240,232,0.1); }
+    .lb-prev { left: 28px; }
+    .lb-next { right: 28px; }
+    .lb-counter { position: absolute; bottom: 32px; right: 36px; font-size: 0.65rem; letter-spacing: 0.18em; color: var(--stone); opacity: 0.7; }
+    @media (max-width: 600px) {
+      .lb-arrow { width: 40px; height: 40px; font-size: 1.1rem; }
+      .lb-prev { left: 12px; }
+      .lb-next { right: 12px; }
+    }
 
     /* AVAILABILITY */
     #availability { padding: 100px 48px; }
@@ -733,8 +750,11 @@
 <!-- LIGHTBOX -->
 <div class="lightbox" id="lightbox">
   <button class="lb-close" id="lb-close">×</button>
+  <button class="lb-arrow lb-prev" id="lb-prev">&#8592;</button>
   <img id="lb-img" src="" alt="" />
+  <button class="lb-arrow lb-next" id="lb-next">&#8594;</button>
   <div class="lb-caption" id="lb-cap"></div>
+  <div class="lb-counter" id="lb-counter"></div>
 </div>
 
 <!-- REVIEWS -->
@@ -899,12 +919,35 @@ window.addEventListener('scroll', () => {
 
 // Lightbox
 const lightbox = document.getElementById('lightbox');
+let lbPhotos = [];   // full gallery photo array (set in buildGallery)
+let lbIndex  = 0;    // current open index
+
 document.getElementById('lb-close').onclick = () => lightbox.classList.remove('open');
 lightbox.addEventListener('click', e => { if (e.target === lightbox) lightbox.classList.remove('open'); });
-document.addEventListener('keydown', e => { if (e.key === 'Escape') lightbox.classList.remove('open'); });
-function openLightbox(url, caption) {
-  document.getElementById('lb-img').src = url;
-  document.getElementById('lb-cap').textContent = caption || '';
+document.addEventListener('keydown', e => {
+  if (!lightbox.classList.contains('open')) return;
+  if (e.key === 'Escape')      lightbox.classList.remove('open');
+  if (e.key === 'ArrowRight')  lbNavigate(1);
+  if (e.key === 'ArrowLeft')   lbNavigate(-1);
+});
+document.getElementById('lb-prev').onclick = () => lbNavigate(-1);
+document.getElementById('lb-next').onclick = () => lbNavigate(1);
+
+function lbNavigate(dir) {
+  if (!lbPhotos.length) return;
+  lbIndex = (lbIndex + dir + lbPhotos.length) % lbPhotos.length;
+  const p = lbPhotos[lbIndex];
+  document.getElementById('lb-img').src = cloudinaryUrl(p.public_id, 2400);
+  document.getElementById('lb-cap').textContent = p.caption || '';
+  document.getElementById('lb-counter').textContent = `${lbIndex + 1} / ${lbPhotos.length}`;
+}
+
+function openLightbox(index) {
+  lbIndex = index;
+  const p = lbPhotos[index];
+  document.getElementById('lb-img').src = cloudinaryUrl(p.public_id, 2400);
+  document.getElementById('lb-cap').textContent = p.caption || '';
+  document.getElementById('lb-counter').textContent = `${index + 1} / ${lbPhotos.length}`;
   lightbox.classList.add('open');
 }
 
@@ -1037,6 +1080,7 @@ const LAYOUT = ['gl-0','gl-1','gl-2','gl-3','gl-4','gl-5'];
 function buildGallery(photos) {
   const grid = document.getElementById('gallery-grid');
   if (!photos.length) { grid.innerHTML = `<div class="gallery-msg">No gallery photos yet.</div>`; return; }
+  lbPhotos = photos; // store for lightbox navigation
   grid.innerHTML = '';
   photos.forEach((p, i) => {
     const div = document.createElement('div');
@@ -1050,7 +1094,7 @@ function buildGallery(photos) {
     img.onload = () => img.classList.add('loaded');
     if (img.complete) img.classList.add('loaded');
     div.appendChild(img);
-    div.addEventListener('click', () => openLightbox(cloudinaryUrl(p.public_id, 2400), p.caption));
+    div.addEventListener('click', () => openLightbox(i));
     grid.appendChild(div);
   });
   // Scroll reveal using IntersectionObserver
@@ -1184,7 +1228,19 @@ const SEED_REVIEWS = [
 
 ];
 
-let reviews = [...SEED_REVIEWS];
+// Load saved reviews from localStorage, fall back to seed data
+function loadReviews() {
+  try {
+    const saved = localStorage.getItem('poplarshores_reviews');
+    if (saved) return JSON.parse(saved);
+  } catch(e) {}
+  return [...SEED_REVIEWS];
+}
+function saveReviews() {
+  try { localStorage.setItem('poplarshores_reviews', JSON.stringify(reviews)); } catch(e) {}
+}
+
+let reviews = loadReviews();
 let marqueeRAF = null;
 let marqueePos = 0;
 let marqueeSpeed = 0.4; // px per frame — adjust to taste
@@ -1299,6 +1355,7 @@ function submitReview() {
   const now = new Date();
   const month = now.toLocaleString('default', { month: 'long' });
   reviews.unshift({ name, stars: selectedStars, text, date: `${month} ${now.getFullYear()}` });
+  saveReviews();
   renderReviews();
   closeReviewModal();
 }
