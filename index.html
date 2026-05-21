@@ -1224,23 +1224,42 @@ document.getElementById('amenities-modal').addEventListener('click', function(e)
 });
 
 // ── Reviews ───────────────────────────────────────────────────────────────────
-const SEED_REVIEWS = [
+const SUPABASE_URL  = 'https://ilpmcxwhhcxxtrzmorsz.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlscG1jeHdoaGN4eHRyem1vcnN6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkzNTg2NDYsImV4cCI6MjA5NDkzNDY0Nn0.8NbbOO5d0YKS6-QRdGfrA6Jp4EOpPsuWYabSKQGYliE';
 
-];
-
-// Load saved reviews from localStorage, fall back to seed data
-function loadReviews() {
+async function loadReviews() {
   try {
-    const saved = localStorage.getItem('poplarshores_reviews');
-    if (saved) return JSON.parse(saved);
-  } catch(e) {}
-  return [...SEED_REVIEWS];
-}
-function saveReviews() {
-  try { localStorage.setItem('poplarshores_reviews', JSON.stringify(reviews)); } catch(e) {}
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/reviews?order=created_at.desc`,
+      { headers: { apikey: SUPABASE_ANON, Authorization: `Bearer ${SUPABASE_ANON}` } }
+    );
+    if (!res.ok) throw new Error(await res.text());
+    return await res.json(); // [{name, stars, text, date, created_at}, …]
+  } catch(e) {
+    console.error('Could not load reviews:', e);
+    return [];
+  }
 }
 
-let reviews = loadReviews();
+async function saveReview(review) {
+  const res = await fetch(
+    `${SUPABASE_URL}/rest/v1/reviews`,
+    {
+      method: 'POST',
+      headers: {
+        apikey: SUPABASE_ANON,
+        Authorization: `Bearer ${SUPABASE_ANON}`,
+        'Content-Type': 'application/json',
+        Prefer: 'return=representation'
+      },
+      body: JSON.stringify(review)
+    }
+  );
+  if (!res.ok) throw new Error(await res.text());
+  return (await res.json())[0];
+}
+
+let reviews = [];
 let marqueeRAF = null;
 let marqueePos = 0;
 let marqueeSpeed = 0.4; // px per frame — adjust to taste
@@ -1341,10 +1360,11 @@ document.querySelectorAll('.star-picker span').forEach(star => {
   });
 });
 
-function submitReview() {
+async function submitReview() {
   const name = document.getElementById('review-name').value.trim();
   const text = document.getElementById('review-text').value.trim();
   const err  = document.getElementById('modal-error');
+  const btn  = document.querySelector('.modal-submit');
 
   if (!name || !text || selectedStars === 0) {
     err.style.display = 'block';
@@ -1354,10 +1374,23 @@ function submitReview() {
 
   const now = new Date();
   const month = now.toLocaleString('default', { month: 'long' });
-  reviews.unshift({ name, stars: selectedStars, text, date: `${month} ${now.getFullYear()}` });
-  saveReviews();
-  renderReviews();
-  closeReviewModal();
+  const review = { name, stars: selectedStars, text, date: `${month} ${now.getFullYear()}` };
+
+  btn.disabled = true;
+  btn.textContent = 'Submitting…';
+  try {
+    const saved = await saveReview(review);
+    reviews.unshift(saved);
+    renderReviews();
+    closeReviewModal();
+  } catch(e) {
+    console.error('Failed to save review:', e);
+    err.textContent = 'Could not save your review. Please try again.';
+    err.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Submit Review';
+  }
 }
 
 // ── Calendar ──────────────────────────────────────────────────────────────────
@@ -1467,7 +1500,10 @@ function fmt(d) {
 // Boot
 loadPhotos();
 loadBookedDates();
-renderReviews();
+(async () => {
+  reviews = await loadReviews();
+  renderReviews();
+})();
 </script>
 </body>
 </html>
