@@ -870,7 +870,7 @@
 <section id="book">
   <p class="section-label"></p>
   <h2>Ready to<br><em>escape?</em></h2>
-  <p>Check dates and book directly through Airbnb — quick and secure.</p>
+  <p>Check dates and book directly — quick and secure.</p>
   <button class="airbnb-btn" onclick="openBooking()">Book Now</button>
 </section>
 
@@ -883,8 +883,6 @@
     <p>Choose your preferred platform to check availability and reserve</p>
     <div class="booking-options">
 
-      <a class="booking-option" id="airbnb-link" href="#" target="_blank">Airbnb</a>
-      <a class="booking-option" id="vrbo-link" href="#" target="_blank">VRBO</a>
       <button class="booking-option" onclick="bookViaWebsite()">Send an Inquiry</button>
 
     </div>
@@ -1138,12 +1136,7 @@ function initScrollReveal() {
 
 
 // ── Booking Modal ─────────────────────────────────────────────────────────────
-const AIRBNB_URL = 'http://airbnb.ca/h/poplarshores';  // ← paste your Airbnb listing URL
-const VRBO_URL   = '';  // ← paste your VRBO listing URL
-
 function openBooking() {
-  document.getElementById('airbnb-link').href = AIRBNB_URL || '#';
-  document.getElementById('vrbo-link').href   = VRBO_URL   || '#';
   document.getElementById('booking-modal').classList.add('open');
 }
 function closeBooking() {
